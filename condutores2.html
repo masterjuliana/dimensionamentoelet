@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Guia de Dimensionamento de Condutores - NBR 5410</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background-color: #121212;
+        color: #e0e0e0;
+    }
+    h1, h2, h3 {
+        color: #80d8ff;
+        text-align: center;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 12px;
+    }
+    th, td {
+        border: 1px solid #444;
+        padding: 8px;
+    }
+    th {
+        background-color: #263238;
+        color: #80d8ff;
+    }
+    td {
+        background-color: #1e1e1e;
+    }
+    .fluxograma {
+        background: #1e1e1e;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0px 0px 10px rgba(0,0,0,0.6);
+    }
+    .calculadora {
+        margin: 20px auto;
+        padding: 20px;
+        max-width: 500px;
+        background: #1e1e1e;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0,0,0,0.6);
+    }
+    label, input, select, button {
+        display: block;
+        margin: 10px 0;
+        width: 100%;
+    }
+    input, select {
+        padding: 8px;
+        border-radius: 5px;
+        border: 1px solid #555;
+        background: #2c2c2c;
+        color: #e0e0e0;
+    }
+    button {
+        padding: 10px;
+        background: #00bcd4;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    button:hover {
+        background: #0097a7;
+    }
+</style>
+</head>
+<body>
+
+<h1>⚡ Guia para Dimensionamento de Condutores Elétricos (NBR 5410)</h1>
+<div class="fluxograma">
+<h2>🔀 Fluxograma Simplificado</h2>
+<pre>
+[ Início ]
+     ↓
+[ Calcular Corrente da Carga (I = P / (V * cosφ)) ]
+     ↓
+[ Definir Método de Instalação (A1, B1, C, D, E...) ]
+     ↓
+[ Consultar Tabela de Capacidade da NBR 5410 ]
+     ↓
+[ Aplicar Fatores de Correção (temperatura, agrupamento...) ]
+     ↓
+[ Verificar Queda de Tensão (≤ 4% iluminação, ≤ 6% força) ]
+     ↓
+[ Conferir Seções Mínimas da Norma ]
+     ↓
+[ Selecionar Disjuntor Compatível ]
+     ↓
+[ Condutor Dimensionado ]
+</pre>
+</div>
+
+<div class="calculadora">
+  <h2>🔢 Mini Calculadora</h2>
+  <label for="potencia">Potência (W):</label>
+  <input type="number" id="potencia">
+
+  <label for="tensao">Tensão (V):</label>
+  <input type="number" id="tensao">
+
+  <label for="comprimento">Comprimento (m - ida):</label>
+  <input type="number" id="comprimento">
+
+  <label for="material">Material:</label>
+  <select id="material">
+    <option value="cobre">Cobre</option>
+    <option value="aluminio">Alumínio</option>
+  </select>
+
+  <button onclick="calcular()">Calcular</button>
+  <p id="resultado"></p>
+</div>
+
+
+<div class="tabela">
+<h2>📐 Tabela Rápida de Bitolas (Cobre, Isolação PVC, 30°C, Método B1)</h2>
+<table>
+<thead>
+<tr>
+<th>Seção (mm²)</th>
+<th>Corrente Máx. (A)</th>
+<th>Aplicações Típicas</th>
+</tr>
+</thead>
+<tbody>
+<tr><td>1,5</td><td>15–18</td><td>Iluminação</td></tr>
+<tr><td>2,5</td><td>21–24</td><td>Tomadas de uso geral</td></tr>
+<tr><td>4</td><td>28–32</td><td>Chuveiro até 5500 W, ar-condic.</td></tr>
+<tr><td>6</td><td>36–41</td><td>Chuveiro > 6500 W, forno elétrico</td></tr>
+<tr><td>10</td><td>50–57</td><td>Ar-condicionado central, motores</td></tr>
+<tr><td>16</td><td>68–76</td><td>Grandes cargas industriais</td></tr>
+<tr><td>25</td><td>89–101</td><td>Alimentadores principais</td></tr>
+<tr><td>35</td><td>111–125</td><td>Subalimentadores</td></tr>
+<tr><td>50</td><td>134–152</td><td>Redes prediais</td></tr>
+</tbody>
+</table>
+</div>
+
+
+
+<script>
+function calcular() {
+  let P = parseFloat(document.getElementById('potencia').value);
+  let V = parseFloat(document.getElementById('tensao').value);
+  let L = parseFloat(document.getElementById('comprimento').value);
+  let mat = document.getElementById('material').value;
+
+  if (isNaN(P) || isNaN(V) || isNaN(L)) {
+    document.getElementById('resultado').innerText = "Preencha todos os campos.";
+    return;
+  }
+
+  let I = P / V;
+  let resistividade = mat === "cobre" ? 0.0175 : 0.0282;
+  let S = 2.5; // bitola inicial para exemplo
+  let R = (resistividade * 2 * L) / S;
+  let dV = I * R;
+  let perc = (dV / V) * 100;
+
+  document.getElementById('resultado').innerText = `Corrente: ${I.toFixed(2)} A | Queda de tensão (estimada com 2,5 mm²): ${dV.toFixed(2)} V (${perc.toFixed(2)}%)`;
+}
+</script>
+
+<!-- Exemplos Práticos -->
+<div class="fluxograma">
+  <h2>📚 Exemplos Práticos (Tabela Comparativa)</h2>
+  <p style="text-align:center;">Entradas → Resultado final</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Caso</th>
+        <th>Entrada</th>
+        <th>Cálculo / Observações</th>
+        <th>Resultado sugerido</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1 — Iluminação</td>
+        <td>600 W | 127 V | 10 m | Cobre</td>
+        <td>I = 4,72 A | ΔV = 1,10 V (0,87%)</td>
+        <td>1,5 mm² | Disj. 10 A</td>
+      </tr>
+      <tr>
+        <td>2 — Tomadas</td>
+        <td>2000 W | 220 V | 15 m | Cobre</td>
+        <td>I = 9,09 A | ΔV = 1,91 V (0,87%)</td>
+        <td>2,5 mm² | Disj. 16 A</td>
+      </tr>
+      <tr>
+        <td>3 — Chuveiro</td>
+        <td>5500 W | 220 V | 25 m | Cobre</td>
+        <td>I = 25 A | ΔV = 5,47 V (2,49%)</td>
+        <td>4 mm² | Disj. 32 A</td>
+      </tr>
+      <tr>
+        <td>4 — Motor trifásico</td>
+        <td>5 cv (~3680 W) | 220 V | 30 m | Cobre</td>
+        <td>I ≈ 12 A | ΔV ≈ 3,8 V (1,7%)</td>
+        <td>4 mm² | Disj. 20 A</td>
+      </tr>
+      <tr>
+        <td>5 — Ar-condicionado</td>
+        <td>12000 BTU (~1300 W) | 220 V | 20 m | Cobre</td>
+        <td>I ≈ 6 A | ΔV ≈ 1,1 V (0,5%)</td>
+        <td>2,5 mm² | Disj. 10 A</td>
+      </tr>
+      <tr>
+        <td>6 — Alimentador</td>
+        <td>10000 W | 220 V | 40 m | Cobre</td>
+        <td>I ≈ 45 A | ΔV ≈ 8,4 V (3,8%)</td>
+        <td>10 mm² | Disj. 50 A</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="margin-top:12px; font-size:0.95rem;">Obs.: valores aproximados com resistividade padrão do cobre (0,0175 Ω·mm²/m). Projetos reais devem considerar fatores de correção (temperatura, agrupamento) e tabelas da NBR 5410.</p>
+</div>
+
+</body>
+</html>
